@@ -29,5 +29,10 @@ public class Delivery {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime deliveryDate;
 
-    String status; // Scheduled, Out for Delivery, Delivered
+    String status;
+    // Scheduled, Out for Delivery, Delivered
+//    @Enumerated(EnumType.STRING)
+//    DeliveryStatus status;
+
+
 }
