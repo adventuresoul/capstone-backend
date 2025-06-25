@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     List<Delivery> findByUserId(Long userId);
+    List<Delivery> findByUserIdAndStatus(Long userId, String status);
+    List<Delivery> findByStatus(String status);
 }

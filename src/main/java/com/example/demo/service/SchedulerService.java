@@ -45,7 +45,7 @@ public class SchedulerService {
             delivery.setUser(subscription.getUser());
             delivery.setDeliveryDate(subscription.getNextDeliveryDate());
             delivery.setSubscriptionItem(item);
-            delivery.setStatus("OUT FOR DELIVERY");
+            delivery.setStatus("SCHEDULED");
 
             deliveryRepository.save(delivery);
 
@@ -65,4 +65,39 @@ public class SchedulerService {
 
         System.out.println("✅ Scheduler run completed.\n");
     }
+
+        //schedule to out_of_delivery
+
+    @Scheduled(fixedRate = 60 * 1000) // Every 1 minute
+    public void markOutForDelivery() {
+            LocalDateTime now = LocalDateTime.now();
+            List<Delivery> deliveries = deliveryRepository.findAll();
+
+            for (Delivery delivery : deliveries) {
+                if ("SCHEDULED".equals(delivery.getStatus()) &&
+                    delivery.getDeliveryDate().isBefore(now)) {
+                delivery.setStatus("OUT FOR DELIVERY");
+                deliveryRepository.save(delivery);
+                System.out.println("🚚 Updated to OUT FOR DELIVERY: Delivery ID " + delivery.getId());
+                }
+            }
+    }
+    //out_of_delivery to delivered
+    @Scheduled(fixedRate = 60 * 1000) // Every 1 minute
+    public void markDelivered() {
+            LocalDateTime now = LocalDateTime.now();
+            List<Delivery> deliveries = deliveryRepository.findAll();
+
+            for (Delivery delivery : deliveries) {
+                if ("OUT FOR DELIVERY".equals(delivery.getStatus()) &&
+                    delivery.getDeliveryDate().plusMinutes(5).isBefore(now)) {
+                delivery.setStatus("DELIVERED");
+                deliveryRepository.save(delivery);
+                System.out.println("📦 Marked as DELIVERED: Delivery ID " + delivery.getId());
+                }
+            }
+    }
+
+
+
 }
